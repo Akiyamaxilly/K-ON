@@ -1270,6 +1270,194 @@ footer {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   Guestbook
+   ═══════════════════════════════════════════════════════════════ */
+.guestbook-section {
+  position: relative;
+  z-index: 1;
+  padding: 5rem 1.5rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.guestbook-wrap {
+  padding: 2rem 2.2rem;
+}
+
+.guestbook-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 2rem;
+}
+
+.guestbook-form-row {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.guestbook-form-row input {
+  flex: 1;
+}
+
+.guestbook-input {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.guestbook-input:focus {
+  border-color: var(--accent);
+  background: rgba(255,255,255,0.06);
+}
+
+.guestbook-input::placeholder {
+  color: var(--text-muted);
+}
+
+.guestbook-textarea {
+  resize: vertical;
+  min-height: 80px;
+  max-height: 200px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.guestbook-textarea:focus {
+  border-color: var(--accent);
+  background: rgba(255,255,255,0.06);
+}
+
+.guestbook-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.guestbook-submit {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  color: #fff;
+  padding: 0.7rem 1.8rem;
+  border-radius: 50px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+}
+
+.guestbook-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(255, 107, 138, 0.3);
+}
+
+.guestbook-submit:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.guestbook-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.guestbook-empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+.guestbook-msg {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+  transition: background 0.2s;
+}
+
+.guestbook-msg:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.guestbook-msg-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.guestbook-msg-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--accent);
+}
+
+.guestbook-msg-time {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-family: 'Caveat', cursive;
+}
+
+.guestbook-msg-text {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--text-dim);
+  word-break: break-word;
+}
+
+.guestbook-msg-delete {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+  opacity: 0;
+}
+
+.guestbook-msg:hover .guestbook-msg-delete {
+  opacity: 1;
+}
+
+.guestbook-msg-delete:hover {
+  color: var(--accent);
+  background: rgba(255,107,138,0.1);
+}
+
+.guestbook-count {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+/* ═══════════════════════════════════════════════════════════════
    Responsive
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
@@ -1341,12 +1529,15 @@ footer {
   .modal-name-jp { font-size: 1.4rem; }
 
   .section { padding: 3rem 1rem; }
+  .guestbook-section { padding: 3rem 1rem; }
+  .guestbook-wrap { padding: 1.5rem; }
+  .guestbook-form-row { flex-direction: column; }
 }
 
 @media (max-width: 480px) {
   .chars-grid { grid-template-columns: 1fr; }
   .char-img { height: 240px; }
-  .gallery-viewport { aspect-ratio: 3 / 4; }
+  .gallery-viewport { aspect-ratio: 16 / 10; }
   .gallery-arrow { width: 32px; height: 32px; font-size: 0.8rem; opacity: 0.6; }
   .gallery-arrow.prev { left: 0.5rem; }
   .gallery-arrow.next { right: 0.5rem; }
@@ -1354,6 +1545,10 @@ footer {
   .player-ctrl { gap: 0.5rem; }
   .ctrl-btn { width: 36px; height: 36px; font-size: 1rem; }
   .ctrl-btn.play { width: 44px; height: 44px; }
+  .guestbook-wrap { padding: 1.2rem; }
+  .guestbook-form-row { flex-direction: column; }
+  .guestbook-submit { width: 100%; justify-content: center; }
+  .guestbook-msg-header { flex-direction: column; align-items: flex-start; gap: 0.2rem; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1383,6 +1578,7 @@ footer {
     <li><a href="#music" onclick="closeNav()">音乐</a></li>
     <li><a href="#characters" onclick="closeNav()">角色</a></li>
     <li><a href="#gallery" onclick="closeNav()">相册</a></li>
+    <li><a href="#guestbook" onclick="closeNav()">留言</a></li>
     <li><a href="#about" onclick="closeNav()">关于</a></li>
   </ul>
   <button class="nav-toggle" id="navToggle" aria-label="菜单">
@@ -1610,6 +1806,24 @@ footer {
   <p class="about-text reveal">本站是《轻音少女》（けいおん！）的个人粉丝站，秋山澪天下第一！！秋山澪天下第一！！秋山澪天下第一！！秋山澪天下第一！！秋山澪天下第一！！秋山澪天下第一！！。</p>
   <p class="about-text reveal">《轻音少女》原作为 kakifly 的漫画，由京都动画制作成动画，2009年播出。讲述高中女孩们组成"放課後ティータイム"乐队，一起演奏音乐、喝茶、度过青春的故事。</p>
   <p class="about-signoff reveal">「また来てね！」</p>
+</section>
+
+<!-- ═══ Guestbook ═══ -->
+<section class="guestbook-section" id="guestbook">
+  <div class="section-label reveal">♪ 留言板</div>
+  <div class="guestbook-wrap glass-lg reveal">
+    <div class="guestbook-form">
+      <div class="guestbook-form-row">
+        <input class="guestbook-input" id="gbName" type="text" placeholder="你的名字（选填）" maxlength="20">
+      </div>
+      <textarea class="guestbook-textarea" id="gbMessage" placeholder="写下你想说的话…" maxlength="500"></textarea>
+      <button class="guestbook-submit" id="gbSubmit" onclick="submitGuestbook()">发布留言 ✦</button>
+    </div>
+    <div class="guestbook-list" id="gbList">
+      <div class="guestbook-empty">还没有留言，来说点什么吧 🎵</div>
+    </div>
+    <div class="guestbook-count" id="gbCount"></div>
+  </div>
 </section>
 
 <footer>
@@ -1998,6 +2212,21 @@ buildPlaylist();
     startAutoplay();
   }
 
+  /* touch swipe support */
+  let touchStartX = 0;
+  let touchEndX = 0;
+  viewport.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+  viewport.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) next(); else prev();
+      resetAutoplay();
+    }
+  }, { passive: true });
+
   /* pause on hover / touch */
   const frame = document.querySelector('.gallery-frame');
   frame.addEventListener('mouseenter', stopAutoplay);
@@ -2059,6 +2288,82 @@ function closeModalOutside(e) {
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ────────────────────────────────────────────────────────────
+   Guestbook
+──────────────────────────────────────────────────────────── */
+const STORAGE_KEY = 'kon_guestbook';
+
+function getMessages() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch { return []; }
+}
+
+function saveMessages(msgs) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs));
+}
+
+function renderGuestbook() {
+  const list = document.getElementById('gbList');
+  const count = document.getElementById('gbCount');
+  const msgs = getMessages();
+  if (msgs.length === 0) {
+    list.innerHTML = '<div class="guestbook-empty">还没有留言，来说点什么吧 🎵</div>';
+    count.textContent = '';
+    return;
+  }
+  list.innerHTML = msgs.map((m, i) => `
+    <div class="guestbook-msg">
+      <div class="guestbook-msg-header">
+        <span class="guestbook-msg-name">${escapeHtml(m.name || '匿名')}</span>
+        <span class="guestbook-msg-time">${m.time}</span>
+      </div>
+      <div class="guestbook-msg-text">${escapeHtml(m.text)}</div>
+      <button class="guestbook-msg-delete" onclick="deleteMessage(${i})" title="删除">✕</button>
+    </div>
+  `).join('');
+  count.textContent = `共 ${msgs.length} 条留言`;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/* Enter to send support */
+document.getElementById('gbMessage').addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    submitGuestbook();
+  }
+});
+
+function submitGuestbook() {
+  const nameEl = document.getElementById('gbName');
+  const msgEl = document.getElementById('gbMessage');
+  const name = nameEl.value.trim();
+  const text = msgEl.value.trim();
+  if (!text) return;
+  const msgs = getMessages();
+  const now = new Date();
+  const timeStr = now.getFullYear() + '/' + String(now.getMonth()+1).padStart(2,'0') + '/' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  msgs.unshift({ name: name || '匿名', text, time: timeStr });
+  saveMessages(msgs);
+  renderGuestbook();
+  nameEl.value = '';
+  msgEl.value = '';
+}
+
+function deleteMessage(idx) {
+  const msgs = getMessages();
+  msgs.splice(idx, 1);
+  saveMessages(msgs);
+  renderGuestbook();
+}
+
+renderGuestbook();
 </script>
 </body>
 </html>
