@@ -457,36 +457,6 @@ nav {
   margin-bottom: 1.5rem;
 }
 
-.album-art {
-  width: 80px;
-  height: 80px;
-  border-radius: 14px;
-  flex-shrink: 0;
-  background: linear-gradient(135deg, #2a1a2e, #1a0a20);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-.album-art img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.album-art.spinning img {
-  animation: spinRecord 4s linear infinite;
-}
-@keyframes spinRecord {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
 .track-info { flex: 1; min-width: 0; }
 .track-name {
   font-size: 1.05rem;
@@ -1622,10 +1592,6 @@ footer {
     <div class="player-wrap glass-lg reveal">
       <!-- Now Playing -->
       <div class="player-now">
-        <div class="album-art" id="albumArt">
-          <span id="albumEmoji">🎵</span>
-          <img id="albumImg" src="" alt="封面">
-        </div>
         <div class="track-info">
           <div class="track-name" id="trackName">选择一首歌曲</div>
           <div class="track-artist" id="trackArtist">— 放課後ティータイム</div>
@@ -2034,9 +2000,6 @@ const volSlider = document.getElementById('volumeSlider');
 const plDiv     = document.getElementById('playlist');
 const trackName = document.getElementById('trackName');
 const trackArtist = document.getElementById('trackArtist');
-const albumEmoji  = document.getElementById('albumEmoji');
-const albumImg    = document.getElementById('albumImg');
-const albumArt    = document.getElementById('albumArt');
 const eqWrap      = document.getElementById('eqWrap');
 
 let currentIdx = -1;
@@ -2067,18 +2030,9 @@ function loadTrack(idx, play = false) {
   trackName.textContent   = t.name;
   trackArtist.textContent = '— ' + t.artist;
 
-  if (t.cover) {
-    albumImg.src = t.cover;
-    albumImg.style.display = 'block';
-    albumEmoji.style.display = 'none';
-  } else {
-    albumImg.style.display = 'none';
-    albumEmoji.style.display = '';
-  }
-
   if (t.src) {
     audio.src = t.src;
-    if (play) { audio.play().then(() => { isPlaying = true; btnPlay.textContent = '❚❚'; albumArt.classList.add('spinning'); eqWrap.classList.add('active'); }).catch(() => {}); }
+    if (play) { audio.play().then(() => { isPlaying = true; btnPlay.textContent = '❚❚'; eqWrap.classList.add('active'); }).catch(() => {}); }
   } else if (play) {
     trackName.textContent = t.name + '（请填写 src 路径）';
   }
@@ -2091,9 +2045,9 @@ function loadTrack(idx, play = false) {
 btnPlay.addEventListener('click', () => {
   if (currentIdx === -1) { loadTrack(0, true); return; }
   if (audio.paused) {
-    audio.play().then(() => { isPlaying = true; btnPlay.textContent = '❚❚'; albumArt.classList.add('spinning'); eqWrap.classList.add('active'); }).catch(() => {});
+    audio.play().then(() => { isPlaying = true; btnPlay.textContent = '❚❚'; eqWrap.classList.add('active'); }).catch(() => {});
   } else {
-    audio.pause(); isPlaying = false; btnPlay.textContent = '▶'; albumArt.classList.remove('spinning'); eqWrap.classList.remove('active');
+    audio.pause(); isPlaying = false; btnPlay.textContent = '▶'; eqWrap.classList.remove('active');
   }
 });
 
