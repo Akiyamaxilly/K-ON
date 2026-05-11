@@ -1504,11 +1504,12 @@ footer {
 
   .player-wrap { padding: 1.5rem; }
 
+  .gallery-section { padding: 3rem 0.8rem; }
   .gallery-frame { padding: 0.6rem; }
   .gallery-viewport { aspect-ratio: 4 / 3; }
   .gallery-arrow { width: 36px; height: 36px; font-size: 0.9rem; }
-  .gallery-arrow.prev { left: 0.8rem; }
-  .gallery-arrow.next { right: 0.8rem; }
+  .gallery-arrow.prev { left: 0.5rem; }
+  .gallery-arrow.next { right: 0.5rem; }
   .gallery-dot { width: 6px; height: 6px; }
   .gallery-dot.active { width: 18px; }
 
@@ -1537,11 +1538,16 @@ footer {
 @media (max-width: 480px) {
   .chars-grid { grid-template-columns: 1fr; }
   .char-img { height: 240px; }
-  .gallery-viewport { aspect-ratio: 16 / 10; }
-  .gallery-arrow { width: 32px; height: 32px; font-size: 0.8rem; opacity: 0.6; }
-  .gallery-arrow.prev { left: 0.5rem; }
-  .gallery-arrow.next { right: 0.5rem; }
-  .gallery-bottom { flex-wrap: wrap; gap: 0.6rem; }
+  .gallery-section { padding: 2.5rem 0.5rem; }
+  .gallery-frame { padding: 0.4rem; }
+  .gallery-viewport { aspect-ratio: 4 / 3; }
+  .gallery-arrow { width: 30px; height: 30px; font-size: 0.75rem; opacity: 0.7; }
+  .gallery-arrow.prev { left: 0.3rem; }
+  .gallery-arrow.next { right: 0.3rem; }
+  .gallery-bottom { flex-wrap: wrap; gap: 0.4rem; padding: 0.6rem 0.2rem 0.1rem; }
+  .gallery-counter { font-size: 0.75rem; min-width: 3rem; }
+  .gallery-dot { width: 5px; height: 5px; }
+  .gallery-dot.active { width: 14px; }
   .player-ctrl { gap: 0.5rem; }
   .ctrl-btn { width: 36px; height: 36px; font-size: 1rem; }
   .ctrl-btn.play { width: 44px; height: 44px; }
