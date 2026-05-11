@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(where python *)",
+      "Read(//c/Users/29572/AppData/Local/Programs/**)",
+      "Bash(ffmpeg -version)",
+      "Bash(ffmpeg -f lavfi -i \"sine=frequency=440:duration=18\" -af \"afade=t=in:d=2,afade=t=out:st=15:d=3\" -b:a 160k \"fuwafuwa_time.mp3\" -y -loglevel error)",
+      "Bash(ffmpeg -f lavfi -i \"sine=frequency=493.88:duration=18\" -af \"afade=t=in:d=2,afade=t=out:st=15:d=3\" -b:a 160k \"dont_say_lazy.mp3\" -y -loglevel error)",
+      "Bash(ffmpeg -f lavfi -i \"sine=frequency=523.25:duration=18\" -af \"afade=t=in:d=2,afade=t=out:st=15:d=3\" -b:a 160k \"cagayake_girls.mp3\" -y -loglevel error)",
+      "Bash(ffmpeg -f lavfi -i \"sine=frequency=587.33:duration=18\" -af \"afade=t=in:d=2,afade=t=out:st=15:d=3\" -b:a 160k \"go_go_maniac.mp3\" -y -loglevel error)",
+      "Bash(ffmpeg -f lavfi -i \"sine=frequency=880:duration=18\" -af \"afade=t=in:d=2,afade=t=out:st=15:d=3\" -b:a 160k \"u_and_i.mp3\" -y -loglevel error)",
+      "Bash(file *)",
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(node server.js)",
+      "Bash(curl -s http://localhost:3000/api/messages)",
+      "Bash(curl -s -X POST http://localhost:3000/api/messages -H \"Content-Type: application/json\" -d '{\"name\":\"测试君\",\"text\":\"测试留言\"}')",
+      "Bash(curl *)",
+      "Bash(git rm *)",
+      "Bash(git add *)"
+    ]
+  }
+}
