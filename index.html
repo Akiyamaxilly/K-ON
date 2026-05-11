@@ -1,1010 +1,1629 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>放课后ティータイム - 轻音少女站</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Caveat:wght@400;700&family=Dela+Gothic+One&display=swap" rel="stylesheet" />
-  <style>
-    /* ============================================================
-       CSS 变量 & 全局重置
-    ============================================================ */
-    :root {
-      --pink:    #f9a8c9;
-      --pink2:   #f472b6;
-      --yellow:  #fde68a;
-      --cream:   #fff8f0;
-      --brown:   #7c3a1e;
-      --dark:    #1a0a12;
-      --accent:  #e879a0;
-      --purple:  #c084fc;
-      --green:   #86efac;
-      --orange:  #fdba74;
-      --blue:    #93c5fd;
-      --red:     #fca5a5;
-    }
-
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--dark);
-      color: var(--cream);
-      font-family: 'Noto Serif SC', serif;
-      overflow-x: hidden;
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle cx='10' cy='10' r='5' fill='%23f9a8c9' opacity='0.8'/%3E%3C/svg%3E") 10 10, auto;
-    }
-
-    /* ============================================================
-       粒子背景
-    ============================================================ */
-    #particles {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
-    }
-    .particle {
-      position: absolute;
-      border-radius: 50%;
-      opacity: 0;
-      animation: float-up linear infinite;
-    }
-    @keyframes float-up {
-      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
-      10%  { opacity: 0.6; }
-      90%  { opacity: 0.2; }
-      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
-    }
-
-    /* ============================================================
-       HEADER / HERO
-    ============================================================ */
-    header {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem;
-      z-index: 1;
-      overflow: hidden;
-    }
-
-    header::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% 30%, rgba(249,168,201,0.18) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(192,132,252,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 30% at 10% 70%, rgba(253,186,116,0.10) 0%, transparent 60%);
-      z-index: -1;
-    }
-
-    /* 装饰音符 */
-    .deco-note {
-      position: absolute;
-      font-size: 2rem;
-      opacity: 0.12;
-      animation: spin-drift 12s ease-in-out infinite;
-      user-select: none;
-    }
-    @keyframes spin-drift {
-      0%, 100% { transform: rotate(-10deg) translateY(0); }
-      50%       { transform: rotate(10deg)  translateY(-20px); }
-    }
-
-    .logo-band {
-      font-family: 'Dela Gothic One', sans-serif;
-      font-size: clamp(1rem, 3vw, 1.4rem);
-      letter-spacing: 0.3em;
-      color: var(--pink);
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-      animation: fade-down 1s ease both;
-    }
-
-    .logo-title {
-      font-family: 'Dela Gothic One', sans-serif;
-      font-size: clamp(3rem, 10vw, 7rem);
-      line-height: 1;
-      background: linear-gradient(135deg, var(--pink) 0%, var(--yellow) 40%, var(--pink2) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      filter: drop-shadow(0 0 40px rgba(249,168,201,0.4));
-      animation: fade-down 1s 0.2s ease both;
-      margin-bottom: 0.5rem;
-    }
-
-    .logo-sub {
-      font-family: 'Caveat', cursive;
-      font-size: clamp(1.2rem, 3vw, 1.8rem);
-      color: var(--yellow);
-      opacity: 0.85;
-      letter-spacing: 0.1em;
-      animation: fade-down 1s 0.4s ease both;
-      margin-bottom: 2.5rem;
-    }
-
-    @keyframes fade-down {
-      from { opacity: 0; transform: translateY(-30px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ============================================================
-       导航栏
-    ============================================================ */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      padding: 1rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      backdrop-filter: blur(12px);
-      background: rgba(26,10,18,0.7);
-      border-bottom: 1px solid rgba(249,168,201,0.15);
-    }
-
-    .nav-logo {
-      font-family: 'Dela Gothic One', sans-serif;
-      font-size: 1.1rem;
-      color: var(--pink);
-      letter-spacing: 0.1em;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: var(--cream);
-      text-decoration: none;
-      font-size: 0.85rem;
-      letter-spacing: 0.15em;
-      transition: color 0.3s;
-      position: relative;
-    }
-
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      left: 0; bottom: -4px;
-      width: 0; height: 2px;
-      background: var(--pink);
-      transition: width 0.3s;
-    }
-
-    .nav-links a:hover { color: var(--pink); }
-    .nav-links a:hover::after { width: 100%; }
-
-    /* ============================================================
-       音乐播放器（★ 在此处替换音频文件路径）
-    ============================================================ */
-    .player-section {
-      position: relative;
-      z-index: 1;
-      padding: 5rem 2rem 4rem;
-      text-align: center;
-    }
-
-    .section-title {
-      font-family: 'Dela Gothic One', sans-serif;
-      font-size: clamp(1.5rem, 4vw, 2.5rem);
-      background: linear-gradient(90deg, var(--pink), var(--yellow));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 3rem;
-      letter-spacing: 0.1em;
-    }
-
-    .player-wrap {
-      max-width: 680px;
-      margin: 0 auto;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(249,168,201,0.2);
-      border-radius: 24px;
-      padding: 2rem 2.5rem;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 8px 60px rgba(249,168,201,0.08);
-    }
-
-    /* 当前曲目显示 */
-    .player-now-playing {
-      display: flex;
-      align-items: center;
-      gap: 1.2rem;
-      margin-bottom: 1.5rem;
-    }
-
-    /* 专辑封面占位：替换为真实图片 src 后删去 background 即可 */
-    /* ★ 图片注释 ★
-       将下方 .album-art 的 background 替换为:
-       background: url('images/your-album-cover.jpg') center/cover;
-       或在 HTML 的 <img> 标签里设置 src="images/cover.jpg"
-    */
-    .album-art {
-      width: 80px;
-      height: 80px;
-      border-radius: 12px;
-      flex-shrink: 0;
-      background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      box-shadow: 0 4px 20px rgba(249,168,201,0.3);
-      overflow: hidden;
-    }
-
-    /* ★ 图片注释结束 ★ */
-
-    .album-art img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: none; /* 放入真实图片后删掉这行 */
-    }
-
-    .track-info { text-align: left; flex: 1; }
-    .track-name {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--cream);
-      margin-bottom: 0.3rem;
-    }
-    .track-artist {
-      font-size: 0.85rem;
-      color: var(--pink);
-      font-family: 'Caveat', cursive;
-    }
-
-    /* 进度条 */
-    .progress-wrap {
-      margin-bottom: 1rem;
-    }
-    .progress-bar-bg {
-      width: 100%;
-      height: 4px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 99px;
-      cursor: pointer;
-      position: relative;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--pink), var(--yellow));
-      border-radius: 99px;
-      width: 0%;
-      transition: width 0.3s linear;
-      pointer-events: none;
-    }
-    .progress-times {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.4);
-      margin-top: 0.4rem;
-      font-family: 'Caveat', cursive;
-    }
-
-    /* 控制按钮 */
-    .player-controls {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .ctrl-btn {
-      background: none;
-      border: none;
-      color: var(--cream);
-      font-size: 1.3rem;
-      cursor: pointer;
-      opacity: 0.7;
-      transition: opacity 0.2s, transform 0.2s, color 0.2s;
-      padding: 0.3rem;
-    }
-    .ctrl-btn:hover { opacity: 1; color: var(--pink); transform: scale(1.15); }
-
-    .ctrl-btn.play-pause {
-      width: 52px;
-      height: 52px;
-      background: linear-gradient(135deg, var(--pink), var(--pink2));
-      border-radius: 50%;
-      font-size: 1.4rem;
-      opacity: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 20px rgba(244,114,182,0.5);
-    }
-    .ctrl-btn.play-pause:hover { transform: scale(1.1); }
-
-    /* 音量 */
-    .volume-wrap {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      justify-content: center;
-    }
-    .volume-icon { font-size: 1rem; opacity: 0.6; }
-    .volume-slider {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100px;
-      height: 4px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 99px;
-      outline: none;
-      cursor: pointer;
-    }
-    .volume-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      background: var(--pink);
-      box-shadow: 0 0 8px rgba(249,168,201,0.6);
-    }
-
-    /* 播放列表 */
-    .playlist {
-      margin-top: 1.5rem;
-      border-top: 1px solid rgba(255,255,255,0.07);
-      padding-top: 1.2rem;
-      max-height: 220px;
-      overflow-y: auto;
-    }
-    .playlist::-webkit-scrollbar { width: 4px; }
-    .playlist::-webkit-scrollbar-track { background: transparent; }
-    .playlist::-webkit-scrollbar-thumb { background: rgba(249,168,201,0.3); border-radius: 99px; }
-
-    .playlist-item {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      padding: 0.6rem 0.8rem;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.2s;
-      font-size: 0.88rem;
-    }
-    .playlist-item:hover { background: rgba(249,168,201,0.07); }
-    .playlist-item.active { background: rgba(249,168,201,0.12); color: var(--pink); }
-
-    .playlist-idx {
-      width: 1.5rem;
-      text-align: center;
-      opacity: 0.4;
-      font-family: 'Caveat', cursive;
-      font-size: 0.8rem;
-    }
-    .playlist-item.active .playlist-idx { opacity: 1; color: var(--pink); }
-    .playlist-item-name { flex: 1; }
-    .playlist-item-dur {
-      opacity: 0.4;
-      font-size: 0.78rem;
-      font-family: 'Caveat', cursive;
-    }
-
-    /* 隐藏的 <audio> 元素 */
-    /* ★ 音乐注释 ★
-       在 playlistData 数组里填写你的 src（文件路径或 URL）
-       格式：{ name: '歌曲名', artist: '演唱者', src: 'music/song.mp3', duration: '3:45' }
-       支持 mp3 / ogg / wav / m4a 等格式
-    */
-
-    /* ============================================================
-       角色卡片区
-    ============================================================ */
-    .characters-section {
-      position: relative;
-      z-index: 1;
-      padding: 4rem 2rem 6rem;
-    }
-
-    .chars-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.5rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    /* 角色卡片 */
-    .char-card {
-      position: relative;
-      border-radius: 20px;
-      overflow: hidden;
-      cursor: pointer;
-      border: 1px solid rgba(255,255,255,0.07);
-      transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), box-shadow 0.35s;
-      background: rgba(255,255,255,0.03);
-      group: true;
-    }
-
-    .char-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 20px 60px var(--card-glow, rgba(249,168,201,0.25));
-    }
-
-    /* 角色色标 */
-    .char-card[data-char="yui"]    { --card-accent: #f9a8c9; --card-glow: rgba(249,168,201,0.30); }
-    .char-card[data-char="mio"]    { --card-accent: #93c5fd; --card-glow: rgba(147,197,253,0.30); }
-    .char-card[data-char="ritsu"]  { --card-accent: #fde68a; --card-glow: rgba(253,230,138,0.30); }
-    .char-card[data-char="tsumugi"]{ --card-accent: #c084fc; --card-glow: rgba(192,132,252,0.30); }
-    .char-card[data-char="azusa"]  { --card-accent: #86efac; --card-glow: rgba(134,239,172,0.30); }
-
-    /* ★ 图片注释 ★
-       .char-img 是角色立绘占位区域。
-       替换方法：将 <div class="char-img"> 改为 <img class="char-img" src="images/yui.png" alt="唯">
-       或保留 div 并在 CSS 里设置 background-image:
-         .char-card[data-char="yui"] .char-img {
-           background-image: url('images/yui.png');
-         }
-       建议图片尺寸：400×500px，PNG 透明底或 JPG
-    */
-    .char-img {
-      width: 100%;
-      height: 260px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(var(--card-accent-rgb,249,168,201),0.12) 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 5rem;
-      color: var(--card-accent);
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.5s;
-    }
-    /* ★ 图片注释结束 ★ */
-
-    .char-card:hover .char-img { transform: scale(1.05); }
-
-    .char-img::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, transparent 40%, rgba(26,10,18,0.8) 100%);
-    }
-
-    .char-body {
-      padding: 1.2rem 1.4rem;
-      position: relative;
-    }
-
-    .char-accent-line {
-      width: 40px; height: 3px;
-      background: var(--card-accent);
-      border-radius: 99px;
-      margin-bottom: 0.7rem;
-      transition: width 0.3s;
-    }
-    .char-card:hover .char-accent-line { width: 70px; }
-
-    .char-name-jp {
-      font-family: 'Dela Gothic One', sans-serif;
-      font-size: 1.25rem;
-      color: var(--card-accent);
-      margin-bottom: 0.2rem;
-    }
-    .char-name-cn {
-      font-size: 0.78rem;
-      opacity: 0.5;
-      letter-spacing: 0.1em;
-      margin-bottom: 0.7rem;
-    }
-    .char-role {
-      font-size: 0.8rem;
-      color: var(--cream);
-      opacity: 0.7;
-      line-height: 1.5;
-      margin-bottom: 0.9rem;
-    }
-
-    .char-tag {
-      display: inline-block;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid var(--card-accent);
-      color: var(--card-accent);
-      font-size: 0.7rem;
-      border-radius: 99px;
-      padding: 0.2rem 0.7rem;
-      margin-right: 0.4rem;
-      margin-bottom: 0.4rem;
-    }
-
-    .char-enter-btn {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.78rem;
-      color: var(--card-accent);
-      margin-top: 1rem;
-      font-family: 'Caveat', cursive;
-      font-size: 0.95rem;
-      opacity: 0.7;
-      transition: opacity 0.2s, gap 0.2s;
-    }
-    .char-card:hover .char-enter-btn { opacity: 1; gap: 0.7rem; }
-
-    /* ============================================================
-       角色详情弹层（Modal）
-    ============================================================ */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 200;
-      background: rgba(10,4,8,0.85);
-      backdrop-filter: blur(8px);
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-    }
-    .modal-overlay.open { display: flex; }
-
-    .modal-box {
-      background: #1e0c18;
-      border: 1px solid rgba(249,168,201,0.2);
-      border-radius: 28px;
-      max-width: 780px;
-      width: 100%;
-      max-height: 88vh;
-      overflow-y: auto;
-      animation: modal-in 0.4s cubic-bezier(.34,1.56,.64,1) both;
-      position: relative;
-    }
-    @keyframes modal-in {
-      from { opacity: 0; transform: scale(0.85) translateY(40px); }
-      to   { opacity: 1; transform: scale(1)    translateY(0); }
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 1.2rem; right: 1.4rem;
-      background: rgba(255,255,255,0.06);
-      border: none;
-      color: var(--cream);
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      font-size: 1.1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
-      z-index: 10;
-    }
-    .modal-close:hover { background: rgba(249,168,201,0.15); color: var(--pink); }
-
-    .modal-header {
-      padding: 2.5rem 2.5rem 1.5rem;
-      display: flex;
-      gap: 2rem;
-      align-items: flex-start;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    /* ★ 图片注释 ★
-       .modal-char-img 是弹出详情页里的角色大图占位。
-       替换：将 background: linear-gradient(...) 改为
-         background: url('images/yui_detail.png') center/cover;
-       或者直接改 HTML，在 modal-char-img div 里加 <img> 标签。
-    */
-    .modal-char-img {
-      width: 140px;
-      height: 180px;
-      border-radius: 16px;
-      flex-shrink: 0;
-      background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 5rem;
-      overflow: hidden;
-    }
-    /* ★ 图片注释结束 ★ */
-
-    .modal-char-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: none; /* 有图后删此行 */
-    }
-
-    .modal-title-area { flex: 1; }
-    .modal-name-jp {
-      font-family: 'Dela Gothic One', sans-serif;
-      font-size: 2rem;
-      color: var(--pink);
-      line-height: 1;
-      margin-bottom: 0.3rem;
-    }
-    .modal-name-cn {
-      font-size: 1rem;
-      opacity: 0.5;
-      margin-bottom: 0.8rem;
-    }
-    .modal-instrument {
-      display: inline-block;
-      background: rgba(249,168,201,0.1);
-      border: 1px solid rgba(249,168,201,0.3);
-      color: var(--pink);
-      border-radius: 99px;
-      padding: 0.3rem 1rem;
-      font-size: 0.85rem;
-      margin-bottom: 0.8rem;
-    }
-    .modal-quote {
-      font-family: 'Caveat', cursive;
-      font-size: 1.1rem;
-      color: var(--yellow);
-      opacity: 0.8;
-      line-height: 1.5;
-    }
-
-    .modal-body {
-      padding: 1.8rem 2.5rem 2.5rem;
-    }
-
-    .modal-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .stat-box {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 14px;
-      padding: 1rem;
-      text-align: center;
-    }
-    .stat-label {
-      font-size: 0.7rem;
-      opacity: 0.4;
-      letter-spacing: 0.1em;
-      margin-bottom: 0.4rem;
-    }
-    .stat-value {
-      font-size: 1rem;
-      color: var(--pink);
-      font-weight: 700;
-    }
-
-    .modal-desc {
-      font-size: 0.92rem;
-      line-height: 1.9;
-      opacity: 0.8;
-      margin-bottom: 1.5rem;
-    }
-
-    .modal-songs h3 {
-      font-size: 0.85rem;
-      letter-spacing: 0.15em;
-      opacity: 0.4;
-      margin-bottom: 0.8rem;
-    }
-
-    .modal-song-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .modal-song-tag {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 99px;
-      padding: 0.3rem 0.9rem;
-      font-size: 0.8rem;
-      opacity: 0.7;
-    }
-
-    /* ============================================================
-       关于 & FOOTER
-    ============================================================ */
-    .about-section {
-      position: relative;
-      z-index: 1;
-      padding: 4rem 2rem;
-      max-width: 800px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .about-section p {
-      font-size: 0.95rem;
-      line-height: 2;
-      opacity: 0.65;
-      margin-bottom: 1rem;
-    }
-
-    footer {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 2rem;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      font-size: 0.8rem;
-      opacity: 0.35;
-      font-family: 'Caveat', cursive;
-    }
-
-    /* ============================================================
-       滚动显示动画
-    ============================================================ */
-    .reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ============================================================
-       响应式
-    ============================================================ */
-    @media (max-width: 600px) {
-      .modal-header { flex-direction: column; }
-      .modal-stats  { grid-template-columns: 1fr 1fr; }
-      .nav-links    { display: none; }
-      .chars-grid   { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>放課後ティータイム — 轻音少女</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Dela+Gothic+One&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   CSS Variables
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --bg-deepest: #06060c;
+  --bg-deep:    #0a0a14;
+  --bg-mid:     #0f0f1e;
+  --glass-bg:   rgba(255, 255, 255, 0.04);
+  --glass-edge: rgba(255, 255, 255, 0.07);
+  --glass-hover:rgba(255, 255, 255, 0.08);
+  --glass-blur: 16px;
+
+  --text:       #ece8f5;
+  --text-dim:   rgba(236, 232, 245, 0.55);
+  --text-muted: rgba(236, 232, 245, 0.3);
+
+  --accent:     #ff6b8a;
+  --accent2:    #f0c040;
+  --accent3:    #a78bfa;
+
+  --c-yui:    #ff6b8a;
+  --c-mio:    #6bb5ff;
+  --c-ritsu:  #f0c040;
+  --c-tsumugi:#c084fc;
+  --c-azusa:  #6bda9c;
+
+  --radius:    16px;
+  --radius-lg: 24px;
+  --radius-sm: 10px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Reset & Base
+   ═══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 400;
+  background: var(--bg-deepest);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.6;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle cx='10' cy='10' r='5' fill='%23ff6b8a' opacity='0.7'/%3E%3C/svg%3E") 10 10, auto;
+}
+
+/* selection */
+::selection { background: rgba(255, 107, 138, 0.35); color: #fff; }
+::-moz-selection { background: rgba(255, 107, 138, 0.35); color: #fff; }
+
+/* ═══════════════════════════════════════════════════════════════
+   Dynamic Background Layers
+   ═══════════════════════════════════════════════════════════════ */
+.bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* gradient orbs */
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.25;
+  animation: orbFloat 30s ease-in-out infinite;
+}
+.bg-orb:nth-child(1) {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, #ff6b8a 0%, transparent 70%);
+  top: -10%; left: -10%;
+  animation-duration: 28s;
+}
+.bg-orb:nth-child(2) {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, #a78bfa 0%, transparent 70%);
+  bottom: -5%; right: -8%;
+  animation-duration: 35s;
+  animation-delay: -10s;
+}
+.bg-orb:nth-child(3) {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #f0c040 0%, transparent 70%);
+  top: 50%; left: 50%;
+  animation-duration: 25s;
+  animation-delay: -5s;
+  opacity: 0.12;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(80px, -60px) scale(1.08); }
+  50% { transform: translate(-40px, 80px) scale(0.92); }
+  75% { transform: translate(-60px, -30px) scale(1.05); }
+}
+
+/* particle container */
+#particles {
+  position: absolute;
+  inset: 0;
+}
+
+/* micro-grid overlay */
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Noise Texture Overlay
+   ═══════════════════════════════════════════════════════════════ */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+}
+.noise-overlay::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  width: 200%; height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  animation: noiseShift 0.5s steps(4) infinite;
+}
+@keyframes noiseShift {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-5px, 5px); }
+  50% { transform: translate(5px, -5px); }
+  75% { transform: translate(-5px, -5px); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Glass Utility
+   ═══════════════════════════════════════════════════════════════ */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--radius);
+}
+
+.glass-lg {
+  background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-right-color: rgba(255,255,255,0.03);
+  border-bottom-color: rgba(255,255,255,0.03);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+  border-radius: var(--radius-lg);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Navigation
+   ═══════════════════════════════════════════════════════════════ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 64px;
+  background: rgba(6, 6, 12, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nav-logo {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  transition: color 0.3s;
+  position: relative;
+  padding: 0.3rem 0;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -2px;
+  width: 0; height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.35s cubic-bezier(.34,1.56,.64,1);
+}
+
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::after { width: 100%; }
+
+/* hamburger */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+  background: none;
+  border: none;
+}
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform 0.3s, opacity 0.3s;
+}
+.nav-toggle.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+/* ═══════════════════════════════════════════════════════════════
+   Hero
+   ═══════════════════════════════════════════════════════════════ */
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+/* floating decorations */
+.hero-deco {
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0.1;
+  animation: decoDrift 16s ease-in-out infinite;
+  user-select: none;
+  pointer-events: none;
+}
+@keyframes decoDrift {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.1; }
+  50% { transform: translateY(-30px) rotate(8deg); opacity: 0.2; }
+}
+
+.hero-band {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(0.75rem, 2vw, 0.95rem);
+  letter-spacing: 0.4em;
+  color: var(--accent);
+  margin-bottom: 1.2rem;
+  opacity: 0;
+  animation: heroFade 1s 0.2s ease both;
+}
+
+.hero-title {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(3.5rem, 12vw, 8rem);
+  line-height: 1;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, var(--accent) 0%, #ffb3c1 30%, var(--accent2) 70%, #ffd700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 60px rgba(255, 107, 138, 0.3));
+  opacity: 0;
+  animation: heroFade 1s 0.4s ease both;
+  position: relative;
+}
+
+.hero-title::after {
+  content: '';
+  position: absolute;
+  inset: -20px -40px;
+  background: radial-gradient(ellipse at center, rgba(255,107,138,0.12) 0%, transparent 70%);
+  z-index: -1;
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+.hero-sub {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  color: var(--accent2);
+  opacity: 0.7;
+  letter-spacing: 0.05em;
+  margin-top: 0.5rem;
+  margin-bottom: 0.3rem;
+  opacity: 0;
+  animation: heroFade 1s 0.6s ease both;
+}
+
+.hero-sub2 {
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
+  color: var(--text-muted);
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  animation: heroFade 1s 0.7s ease both;
+}
+
+@keyframes heroFade {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 107, 138, 0.25);
+  color: var(--text);
+  padding: 0.85rem 2.2rem;
+  border-radius: 50px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(.34,1.56,.64,1);
+  opacity: 0;
+  animation: heroFade 1s 0.9s ease both;
+}
+
+.hero-cta:hover {
+  background: rgba(255, 107, 138, 0.15);
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(255, 107, 138, 0.2);
+}
+
+.hero-cta .arrow {
+  transition: transform 0.3s;
+}
+.hero-cta:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: heroFade 1s 1.2s ease both;
+}
+
+.scroll-dot {
+  width: 2px;
+  height: 24px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+  border-radius: 2px;
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(8px); opacity: 0.2; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Section Titles
+   ═══════════════════════════════════════════════════════════════ */
+.section {
+  position: relative;
+  z-index: 1;
+  padding: 5rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  text-align: center;
+  margin-bottom: 3rem;
+  letter-spacing: 0.03em;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Music Player
+   ═══════════════════════════════════════════════════════════════ */
+.player-section {
+  position: relative;
+  z-index: 1;
+  padding: 5rem 1.5rem;
+}
+
+.player-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.player-wrap {
+  padding: 2rem 2.2rem;
+}
+
+/* now playing */
+.player-now {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.album-art {
+  width: 80px;
+  height: 80px;
+  border-radius: 14px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #2a1a2e, #1a0a20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.album-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.album-art.spinning img {
+  animation: spinRecord 4s linear infinite;
+}
+@keyframes spinRecord {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.track-info { flex: 1; min-width: 0; }
+.track-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.track-artist {
+  font-size: 0.82rem;
+  color: var(--accent);
+  font-weight: 400;
+}
+
+/* equalizer bars (animated when playing) */
+.eq-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 24px;
+  width: 28px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.eq-wrap.active { opacity: 1; }
+
+.eq-bar {
+  width: 3px;
+  background: linear-gradient(to top, var(--accent), var(--accent2));
+  border-radius: 3px;
+  height: 100%;
+  animation: eqAnim 0.8s ease-in-out infinite alternate;
+}
+.eq-bar:nth-child(1) { animation-delay: 0s; height: 60%; }
+.eq-bar:nth-child(2) { animation-delay: 0.15s; height: 100%; }
+.eq-bar:nth-child(3) { animation-delay: 0.3s; height: 45%; }
+.eq-bar:nth-child(4) { animation-delay: 0.07s; height: 80%; }
+.eq-bar:nth-child(5) { animation-delay: 0.22s; height: 55%; }
+
+@keyframes eqAnim {
+  0% { transform: scaleY(0.4); }
+  100% { transform: scaleY(1); }
+}
+
+/* progress */
+.progress-wrap { margin-bottom: 1.2rem; }
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: height 0.15s;
+}
+.progress-bar:hover { height: 6px; }
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.3s linear;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: -3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.2s;
+  box-shadow: 0 0 12px rgba(255, 107, 138, 0.6);
+}
+.progress-bar:hover .progress-fill::after {
+  opacity: 1;
+}
+
+.progress-times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+  font-family: 'Caveat', cursive;
+}
+
+/* controls */
+.player-ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ctrl-btn {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: all 0.25s;
+  padding: 0.4rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ctrl-btn:hover { opacity: 1; color: var(--accent); background: rgba(255,107,138,0.08); }
+
+.ctrl-btn.play {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  opacity: 1;
+  color: #fff;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 24px rgba(255, 107, 138, 0.35);
+}
+.ctrl-btn.play:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 32px rgba(255, 107, 138, 0.5);
+  background: linear-gradient(135deg, #ff7a96, #f5c84e);
+}
+
+/* volume */
+.volume-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+}
+.volume-icon {
+  font-size: 0.85rem;
+  opacity: 0.4;
+}
+
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100px;
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px rgba(255,107,138,0.4);
+}
+.volume-slider::-moz-range-thumb {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+}
+
+/* playlist */
+.playlist {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.playlist::-webkit-scrollbar { width: 3px; }
+.playlist::-webkit-scrollbar-track { background: transparent; }
+.playlist::-webkit-scrollbar-thumb { background: rgba(255,107,138,0.25); border-radius: 3px; }
+
+.playlist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 0.85rem;
+  border: 1px solid transparent;
+}
+
+.playlist-item:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.04);
+}
+
+.playlist-item.active {
+  background: rgba(255,107,138,0.08);
+  border-color: rgba(255,107,138,0.15);
+}
+
+.playlist-idx {
+  width: 1.5rem;
+  text-align: center;
+  opacity: 0.3;
+  font-family: 'Caveat', cursive;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.playlist-item.active .playlist-idx {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.playlist-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playlist-dur {
+  opacity: 0.35;
+  font-size: 0.75rem;
+  font-family: 'Caveat', cursive;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Character Cards
+   ═══════════════════════════════════════════════════════════════ */
+.chars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.char-card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(.34,1.56,.64,1), box-shadow 0.4s;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.char-card:hover {
+  transform: translateY(-8px);
+}
+
+.char-img {
+  width: 100%;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.6s;
+}
+
+.char-card:hover .char-img {
+  transform: scale(1.03);
+}
+
+.char-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+}
+
+.char-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(6,6,12,0.85) 100%);
+  z-index: 2;
+}
+
+/* colored accent glow on hover */
+.char-card[data-char="yui"]    { --card-c: var(--c-yui); }
+.char-card[data-char="mio"]    { --card-c: var(--c-mio); }
+.char-card[data-char="ritsu"]  { --card-c: var(--c-ritsu); }
+.char-card[data-char="tsumugi"]{ --card-c: var(--c-tsumugi); }
+.char-card[data-char="azusa"]  { --card-c: var(--c-azusa); }
+
+.char-card:hover {
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px color-mix(in srgb, var(--card-c) 20%, transparent);
+}
+
+.char-body {
+  padding: 1.2rem 1.4rem 1.4rem;
+  position: relative;
+  z-index: 3;
+}
+
+.char-accent {
+  width: 36px;
+  height: 3px;
+  background: var(--card-c, var(--accent));
+  border-radius: 4px;
+  margin-bottom: 0.6rem;
+  transition: width 0.35s;
+}
+.char-card:hover .char-accent { width: 60px; }
+
+.char-name {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 1.15rem;
+  color: var(--card-c, var(--text));
+  margin-bottom: 0.15rem;
+}
+
+.char-name-sub {
+  font-size: 0.72rem;
+  opacity: 0.4;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.char-role {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-bottom: 0.7rem;
+  line-height: 1.5;
+}
+
+.char-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.8rem;
+}
+
+.char-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text-dim);
+  font-size: 0.68rem;
+  border-radius: 20px;
+  padding: 0.2rem 0.65rem;
+}
+
+.char-card[data-char] .char-tag {
+  border-color: color-mix(in srgb, var(--card-c) 25%, transparent);
+  color: var(--card-c);
+}
+
+.char-enter {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: 'Caveat', cursive;
+  font-size: 0.9rem;
+  color: var(--card-c, var(--accent));
+  opacity: 0.6;
+  transition: opacity 0.3s, gap 0.3s;
+}
+
+.char-card:hover .char-enter {
+  opacity: 1;
+  gap: 0.6rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Modal
+   ═══════════════════════════════════════════════════════════════ */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(4, 4, 10, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+  max-width: 780px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalIn 0.45s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.92) translateY(30px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem; right: 1.2rem;
+  background: rgba(255,255,255,0.06);
+  border: none;
+  color: var(--text);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  background: rgba(255,107,138,0.15);
+  color: var(--accent);
+}
+
+.modal-header {
+  padding: 2.5rem 2.5rem 1.5rem;
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.modal-img {
+  width: 130px;
+  height: 170px;
+  border-radius: var(--radius);
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(135deg, #1a0a20, #0a0a14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+}
+
+.modal-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-title-area { flex: 1; }
+
+.modal-name-jp {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 1.8rem;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.modal-name-cn {
+  font-size: 0.9rem;
+  opacity: 0.4;
+  margin-bottom: 0.6rem;
+}
+
+.modal-instrument {
+  display: inline-block;
+  background: rgba(255,107,138,0.08);
+  border: 1px solid rgba(255,107,138,0.2);
+  color: var(--accent);
+  border-radius: 20px;
+  padding: 0.25rem 0.9rem;
+  font-size: 0.8rem;
+  margin-bottom: 0.6rem;
+}
+
+.modal-quote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.1rem;
+  color: var(--accent2);
+  opacity: 0.75;
+}
+
+.modal-body {
+  padding: 1.5rem 2.5rem 2.5rem;
+}
+
+.modal-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-box {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  opacity: 0.35;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.3rem;
+}
+
+.stat-value {
+  font-size: 0.92rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.modal-desc {
+  font-size: 0.88rem;
+  line-height: 1.9;
+  opacity: 0.7;
+  margin-bottom: 1.2rem;
+}
+
+.modal-songs h3 {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  opacity: 0.35;
+  margin-bottom: 0.6rem;
+}
+
+.modal-song-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.modal-song-tag {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 0.25rem 0.8rem;
+  font-size: 0.78rem;
+  opacity: 0.65;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   About
+   ═══════════════════════════════════════════════════════════════ */
+.about-section {
+  position: relative;
+  z-index: 1;
+  padding: 4rem 1.5rem 3rem;
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.about-text {
+  font-size: 0.9rem;
+  line-height: 2;
+  opacity: 0.55;
+  margin-bottom: 1rem;
+  font-weight: 300;
+}
+
+.about-signoff {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2rem;
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Footer
+   ═══════════════════════════════════════════════════════════════ */
+footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.72rem;
+  opacity: 0.25;
+  font-family: 'Caveat', cursive;
+  letter-spacing: 0.05em;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Scroll Reveal
+   ═══════════════════════════════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(35px);
+  transition: opacity 0.8s cubic-bezier(.22,1,.36,1), transform 0.8s cubic-bezier(.22,1,.36,1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Gallery
+   ═══════════════════════════════════════════════════════════════ */
+.gallery-section {
+  position: relative;
+  z-index: 1;
+  padding: 5rem 1.5rem;
+}
+
+.gallery-inner {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.gallery-frame {
+  position: relative;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.gallery-viewport {
+  position: relative;
+  border-radius: calc(var(--radius-lg) - 4px);
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background: rgba(0,0,0,0.3);
+}
+
+.gallery-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(.22,1,.36,1);
+}
+
+.gallery-slide {
+  min-width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.gallery-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* gradient overlay at bottom of image for caption area */
+.gallery-slide::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40%;
+  background: linear-gradient(to top, rgba(6,6,12,0.6), transparent);
+  pointer-events: none;
+}
+
+/* arrow buttons */
+.gallery-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(6,6,12,0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  opacity: 0;
+}
+
+.gallery-frame:hover .gallery-arrow,
+.gallery-arrow:focus-visible {
+  opacity: 1;
+}
+
+.gallery-arrow:hover {
+  background: rgba(255,107,138,0.2);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-50%) scale(1.08);
+}
+
+.gallery-arrow.prev { left: 1.5rem; }
+.gallery-arrow.next { right: 1.5rem; }
+
+/* bottom bar: counter + dots */
+.gallery-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 1rem 0.5rem 0.2rem;
+}
+
+.gallery-counter {
+  font-family: 'Caveat', cursive;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  min-width: 3.5rem;
+  text-align: center;
+}
+
+.gallery-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.gallery-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.4s;
+}
+
+.gallery-dot.active {
+  background: var(--accent);
+  box-shadow: 0 0 12px rgba(255, 107, 138, 0.5);
+  width: 24px;
+  border-radius: 4px;
+}
+
+.gallery-dot:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+/* play/pause indicator */
+.gallery-autoplay-hint {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  opacity: 0.5;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+.gallery-autoplay-hint .pulse-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulseDot 1.5s ease-in-out infinite;
+}
+.gallery-autoplay-hint.paused .pulse-dot {
+  animation: none;
+  background: var(--text-muted);
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  nav { padding: 0 1.2rem; }
+
+  .nav-links {
+    position: fixed;
+    top: 64px;
+    left: 0; right: 0;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(6,6,12,0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding: 0.5rem 0;
+    transform: translateY(-110%);
+    opacity: 0;
+    transition: transform 0.35s, opacity 0.35s;
+    pointer-events: none;
+  }
+
+  .nav-links.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .nav-links a {
+    padding: 0.8rem 1.5rem;
+    display: block;
+  }
+
+  .nav-links a::after { display: none; }
+
+  .nav-toggle { display: flex; }
+
+  .chars-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .char-img { height: 200px; }
+
+  .player-wrap { padding: 1.5rem; }
+
+  .gallery-frame { padding: 0.6rem; }
+  .gallery-viewport { aspect-ratio: 4 / 3; }
+  .gallery-arrow { width: 36px; height: 36px; font-size: 0.9rem; }
+  .gallery-arrow.prev { left: 0.8rem; }
+  .gallery-arrow.next { right: 0.8rem; }
+  .gallery-dot { width: 6px; height: 6px; }
+  .gallery-dot.active { width: 18px; }
+
+  .modal-header {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+
+  .modal-body { padding: 1.2rem 1.5rem 1.8rem; }
+
+  .modal-img {
+    width: 100px;
+    height: 130px;
+  }
+
+  .modal-stats { grid-template-columns: 1fr 1fr; }
+
+  .modal-name-jp { font-size: 1.4rem; }
+
+  .section { padding: 3rem 1rem; }
+}
+
+@media (max-width: 480px) {
+  .chars-grid { grid-template-columns: 1fr; }
+  .char-img { height: 240px; }
+  .gallery-viewport { aspect-ratio: 3 / 4; }
+  .gallery-arrow { width: 32px; height: 32px; font-size: 0.8rem; opacity: 0.6; }
+  .gallery-arrow.prev { left: 0.5rem; }
+  .gallery-arrow.next { right: 0.5rem; }
+  .gallery-bottom { flex-wrap: wrap; gap: 0.6rem; }
+  .player-ctrl { gap: 0.5rem; }
+  .ctrl-btn { width: 36px; height: 36px; font-size: 1rem; }
+  .ctrl-btn.play { width: 44px; height: 44px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Audio Element (hidden)
+   ═══════════════════════════════════════════════════════════════ */
+#audioPlayer { display: none; }
+</style>
 </head>
 <body>
 
-<!-- ============================================================
-     粒子容器（JS 填充）
-============================================================ -->
-<div id="particles"></div>
+<!-- ═══ Dynamic Background ═══ -->
+<div class="bg-canvas" aria-hidden="true">
+  <div class="bg-orb"></div>
+  <div class="bg-orb"></div>
+  <div class="bg-orb"></div>
+  <div id="particles"></div>
+  <div class="bg-grid"></div>
+</div>
 
-<!-- ============================================================
-     导航栏
-============================================================ -->
+<div class="noise-overlay" aria-hidden="true"></div>
+
+<!-- ═══ Navigation ═══ -->
 <nav>
-  <div class="nav-logo">🎸 放課後ティータイム</div>
-  <ul class="nav-links">
-    <li><a href="#hero">首页</a></li>
-    <li><a href="#music">音乐</a></li>
-    <li><a href="#characters">角色</a></li>
-    <li><a href="#about">关于</a></li>
+  <div class="nav-logo">放課後ティータイム</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#hero" onclick="closeNav()">首页</a></li>
+    <li><a href="#music" onclick="closeNav()">音乐</a></li>
+    <li><a href="#characters" onclick="closeNav()">角色</a></li>
+    <li><a href="#gallery" onclick="closeNav()">相册</a></li>
+    <li><a href="#about" onclick="closeNav()">关于</a></li>
   </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="菜单">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-<!-- ============================================================
-     HERO
-============================================================ -->
-<header id="hero">
-  <!-- 装饰音符 -->
-  <span class="deco-note" style="top:12%;left:8%;font-size:3rem;animation-duration:14s;">♩</span>
-  <span class="deco-note" style="top:25%;right:6%;font-size:2rem;animation-duration:10s;animation-delay:-3s;">♪</span>
-  <span class="deco-note" style="bottom:20%;left:14%;font-size:2.5rem;animation-duration:16s;animation-delay:-7s;">♫</span>
-  <span class="deco-note" style="bottom:30%;right:10%;font-size:3.5rem;animation-duration:11s;animation-delay:-2s;">♬</span>
-  <span class="deco-note" style="top:55%;left:50%;font-size:2rem;animation-duration:13s;animation-delay:-5s;">🎸</span>
+<!-- ═══ Hero ═══ -->
+<header class="hero" id="hero">
+  <span class="hero-deco" style="top:12%;left:6%;font-size:2.8rem;animation-duration:18s;">♩</span>
+  <span class="hero-deco" style="top:28%;right:5%;font-size:2.2rem;animation-duration:13s;animation-delay:-4s;">♪</span>
+  <span class="hero-deco" style="bottom:22%;left:12%;font-size:2.6rem;animation-duration:16s;animation-delay:-8s;">♫</span>
+  <span class="hero-deco" style="bottom:28%;right:8%;font-size:3rem;animation-duration:12s;animation-delay:-3s;">♬</span>
+  <span class="hero-deco" style="top:55%;left:55%;font-size:1.8rem;animation-duration:15s;animation-delay:-6s;">🎸</span>
+  <span class="hero-deco" style="top:70%;left:20%;font-size:1.5rem;animation-duration:20s;animation-delay:-10s;">✦</span>
 
-  <div class="logo-band">K-ON! Fan Site · 粉丝站</div>
-  <div class="logo-title">けいおん！</div>
-  <div class="logo-sub">轻音少女 · 放課後ティータイム</div>
-
-  <a href="#characters" style="
-    display:inline-block;
-    background: linear-gradient(135deg,var(--pink),var(--pink2));
-    color:#fff;
-    border: none;
-    border-radius: 99px;
-    padding: 0.85rem 2.5rem;
-    font-family:'Dela Gothic One',sans-serif;
-    font-size:0.9rem;
-    letter-spacing:0.15em;
-    text-decoration:none;
-    box-shadow: 0 8px 30px rgba(244,114,182,0.4);
-    transition: transform 0.2s, box-shadow 0.2s;
-    animation: fade-down 1s 0.6s ease both;
-  "
-  onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 12px 40px rgba(244,114,182,0.6)'"
-  onmouseout="this.style.transform='';this.style.boxShadow='0 8px 30px rgba(244,114,182,0.4)'">
-    认识部员 ✦
+  <div class="hero-band">K-ON! FAN SITE</div>
+  <h1 class="hero-title">けいおん！</h1>
+  <div class="hero-sub">放課後ティータイム</div>
+  <div class="hero-sub2">轻音少女 · 粉丝站</div>
+  <a href="#characters" class="hero-cta">
+    探索部员 <span class="arrow">→</span>
   </a>
+
+  <div class="scroll-indicator">
+    <span style="font-size:0.65rem;opacity:0.3;letter-spacing:0.15em;">SCROLL</span>
+    <div class="scroll-dot"></div>
+  </div>
 </header>
 
-<!-- ============================================================
-     音乐播放器区域
-     ★ 如何添加歌曲：在下方 <script> 里找到 playlistData 数组，
-       填写 src（本地路径或 URL）、name、artist、duration 即可
-============================================================ -->
+<!-- ═══ Music Player ═══ -->
 <section class="player-section" id="music">
-  <div class="section-title reveal">♬ 音乐播放</div>
-
-  <div class="player-wrap reveal">
-    <!-- 当前曲目 -->
-    <div class="player-now-playing">
-      <!-- ★ 图片：将下行 span 替换为 <img src="images/cover.jpg" alt="封面"> 并移除 display:none -->
-      <div class="album-art" id="albumArt">
-        <span id="albumEmoji">🎵</span>
-        <img id="albumImg" src="" alt="封面">
+  <div class="player-inner section">
+    <div class="section-label reveal">♪ 音乐播放</div>
+    <div class="player-wrap glass-lg reveal">
+      <!-- Now Playing -->
+      <div class="player-now">
+        <div class="album-art" id="albumArt">
+          <span id="albumEmoji">🎵</span>
+          <img id="albumImg" src="" alt="封面">
+        </div>
+        <div class="track-info">
+          <div class="track-name" id="trackName">选择一首歌曲</div>
+          <div class="track-artist" id="trackArtist">— 放課後ティータイム</div>
+        </div>
+        <div class="eq-wrap" id="eqWrap">
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+        </div>
       </div>
-      <div class="track-info">
-        <div class="track-name" id="trackName">请在列表中选择歌曲</div>
-        <div class="track-artist" id="trackArtist">— 放課後ティータイム</div>
+
+      <!-- Progress -->
+      <div class="progress-wrap">
+        <div class="progress-bar" id="progressBg">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-times">
+          <span id="timeNow">0:00</span>
+          <span id="timeTotal">0:00</span>
+        </div>
       </div>
-    </div>
 
-    <!-- 进度条 -->
-    <div class="progress-wrap">
-      <div class="progress-bar-bg" id="progressBg">
-        <div class="progress-bar-fill" id="progressFill"></div>
+      <!-- Controls -->
+      <div class="player-ctrl">
+        <button class="ctrl-btn" id="btnPrev" title="上一首">⏮</button>
+        <button class="ctrl-btn" id="btnShuffle" title="随机" style="font-size:0.95rem;">🔀</button>
+        <button class="ctrl-btn play" id="btnPlay" title="播放/暂停">▶</button>
+        <button class="ctrl-btn" id="btnRepeat" title="循环" style="font-size:0.95rem;">🔁</button>
+        <button class="ctrl-btn" id="btnNext" title="下一首">⏭</button>
       </div>
-      <div class="progress-times">
-        <span id="timeNow">0:00</span>
-        <span id="timeTotal">0:00</span>
+
+      <!-- Volume -->
+      <div class="volume-wrap">
+        <span class="volume-icon">🔉</span>
+        <input class="volume-slider" type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.8">
+        <span class="volume-icon">🔊</span>
       </div>
-    </div>
 
-    <!-- 控制按钮 -->
-    <div class="player-controls">
-      <button class="ctrl-btn" id="btnPrev" title="上一首">⏮</button>
-      <button class="ctrl-btn" id="btnShuffle" title="随机" style="font-size:1rem;">🔀</button>
-      <button class="ctrl-btn play-pause" id="btnPlay" title="播放/暂停">▶</button>
-      <button class="ctrl-btn" id="btnRepeat" title="循环" style="font-size:1rem;">🔁</button>
-      <button class="ctrl-btn" id="btnNext" title="下一首">⏭</button>
+      <!-- Playlist -->
+      <div class="playlist" id="playlist"></div>
     </div>
-
-    <!-- 音量 -->
-    <div class="volume-wrap">
-      <span class="volume-icon">🔉</span>
-      <input class="volume-slider" type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.8">
-      <span class="volume-icon">🔊</span>
-    </div>
-
-    <!-- 播放列表 -->
-    <div class="playlist" id="playlist"></div>
   </div>
 </section>
 
-<!-- ============================================================
-     角色区
-============================================================ -->
-<section class="characters-section" id="characters">
-  <div class="section-title reveal">✦ 部员介绍</div>
+<!-- ═══ Characters ═══ -->
+<section class="section" id="characters">
+  <div class="section-label reveal">✦ 部员介绍</div>
   <div class="chars-grid">
 
-    <!-- ─── 平泽唯 ─── -->
-    <div class="char-card reveal" data-char="yui"
-         onclick="openModal('yui')">
-      <div class="char-img" data-char="yui">
-        <img src="images/yui.jpg" alt="平泽唯" style="width:100%;height:100%;object-fit:cover;display:block;position:relative;z-index:1;">
+    <!-- Yui -->
+    <div class="char-card reveal" data-char="yui" onclick="openModal('yui')">
+      <div class="char-img">
+        <img src="images/yui.jpg" alt="平泽唯" loading="lazy">
       </div>
       <div class="char-body">
-        <div class="char-accent-line"></div>
-        <div class="char-name-jp">平沢 唯</div>
-        <div class="char-name-cn">平泽唯 / Hirasawa Yui</div>
-        <div class="char-role">吉他手 · 主唱 · 轻音部部长</div>
-        <span class="char-tag">天然呆</span>
-        <span class="char-tag">元气</span>
-        <span class="char-tag">吉他</span>
-        <div class="char-enter-btn">查看详情 →</div>
+        <div class="char-accent"></div>
+        <div class="char-name">平沢 唯</div>
+        <div class="char-name-sub">Hirasawa Yui</div>
+        <div class="char-role">吉他手 · 主唱 · 部长</div>
+        <div class="char-tags">
+          <span class="char-tag">天然呆</span>
+          <span class="char-tag">元气</span>
+          <span class="char-tag">吉他</span>
+        </div>
+        <div class="char-enter">查看详情 →</div>
       </div>
     </div>
 
-    <!-- ─── 秋山澪 ─── -->
-    <div class="char-card reveal" data-char="mio"
-         onclick="openModal('mio')">
-      <div class="char-img" data-char="mio">
-        <img src="images/mio.jpg" alt="秋山澪" style="width:100%;height:100%;object-fit:cover;display:block;position:relative;z-index:1;">
+    <!-- Mio -->
+    <div class="char-card reveal" data-char="mio" onclick="openModal('mio')">
+      <div class="char-img">
+        <img src="images/mio.jpg" alt="秋山澪" loading="lazy">
       </div>
       <div class="char-body">
-        <div class="char-accent-line"></div>
-        <div class="char-name-jp">秋山 澪</div>
-        <div class="char-name-cn">秋山澪 / Akiyama Mio</div>
-        <div class="char-role">贝斯手 · 副主唱 · 填词人</div>
-        <span class="char-tag">文学少女</span>
-        <span class="char-tag">胆小</span>
-        <span class="char-tag">贝斯</span>
-        <div class="char-enter-btn">查看详情 →</div>
+        <div class="char-accent"></div>
+        <div class="char-name">秋山 澪</div>
+        <div class="char-name-sub">Akiyama Mio</div>
+        <div class="char-role">贝斯手 · 副主唱 · 词作人</div>
+        <div class="char-tags">
+          <span class="char-tag">文学少女</span>
+          <span class="char-tag">胆小</span>
+          <span class="char-tag">贝斯</span>
+        </div>
+        <div class="char-enter">查看详情 →</div>
       </div>
     </div>
 
-    <!-- ─── 田井中律 ─── -->
-    <div class="char-card reveal" data-char="ritsu"
-         onclick="openModal('ritsu')">
-      <div class="char-img" data-char="ritsu">
-        <img src="images/ritsu.jpg" alt="田井中律" style="width:100%;height:100%;object-fit:cover;display:block;position:relative;z-index:1;">
+    <!-- Ritsu -->
+    <div class="char-card reveal" data-char="ritsu" onclick="openModal('ritsu')">
+      <div class="char-img">
+        <img src="images/ritsu.jpg" alt="田井中律" loading="lazy">
       </div>
       <div class="char-body">
-        <div class="char-accent-line"></div>
-        <div class="char-name-jp">田井中 律</div>
-        <div class="char-name-cn">田井中律 / Tainaka Ritsu</div>
-        <div class="char-role">鼓手 · 部长 · 轻音部创始人</div>
-        <span class="char-tag">活泼</span>
-        <span class="char-tag">爱整蛊</span>
-        <span class="char-tag">鼓</span>
-        <div class="char-enter-btn">查看详情 →</div>
+        <div class="char-accent"></div>
+        <div class="char-name">田井中 律</div>
+        <div class="char-name-sub">Tainaka Ritsu</div>
+        <div class="char-role">鼓手 · 部长 · 创始人</div>
+        <div class="char-tags">
+          <span class="char-tag">活泼</span>
+          <span class="char-tag">爱整蛊</span>
+          <span class="char-tag">鼓</span>
+        </div>
+        <div class="char-enter">查看详情 →</div>
       </div>
     </div>
 
-    <!-- ─── 琴吹紬 ─── -->
-    <div class="char-card reveal" data-char="tsumugi"
-         onclick="openModal('tsumugi')">
-      <div class="char-img" data-char="tsumugi">
-        <img src="images/tsumugi.jpg" alt="琴吹紬" style="width:100%;height:100%;object-fit:cover;display:block;position:relative;z-index:1;">
+    <!-- Tsumugi -->
+    <div class="char-card reveal" data-char="tsumugi" onclick="openModal('tsumugi')">
+      <div class="char-img">
+        <img src="images/tsumugi.jpg" alt="琴吹紬" loading="lazy">
       </div>
       <div class="char-body">
-        <div class="char-accent-line"></div>
-        <div class="char-name-jp">琴吹 紬</div>
-        <div class="char-name-cn">琴吹紬 / Kotobuki Tsumugi</div>
+        <div class="char-accent"></div>
+        <div class="char-name">琴吹 紬</div>
+        <div class="char-name-sub">Kotobuki Tsumugi</div>
         <div class="char-role">键盘手 · 点心供应官</div>
-        <span class="char-tag">富家小姐</span>
-        <span class="char-tag">温柔</span>
-        <span class="char-tag">键盘</span>
-        <div class="char-enter-btn">查看详情 →</div>
+        <div class="char-tags">
+          <span class="char-tag">富家小姐</span>
+          <span class="char-tag">温柔</span>
+          <span class="char-tag">键盘</span>
+        </div>
+        <div class="char-enter">查看详情 →</div>
       </div>
     </div>
 
-    <!-- ─── 中野梓 ─── -->
-    <div class="char-card reveal" data-char="azusa"
-         onclick="openModal('azusa')">
-      <div class="char-img" data-char="azusa">
-        <img src="images/azusa.jpg" alt="中野梓" style="width:100%;height:100%;object-fit:cover;display:block;position:relative;z-index:1;">
+    <!-- Azusa -->
+    <div class="char-card reveal" data-char="azusa" onclick="openModal('azusa')">
+      <div class="char-img">
+        <img src="images/azusa.jpg" alt="中野梓" loading="lazy">
       </div>
       <div class="char-body">
-        <div class="char-accent-line"></div>
-        <div class="char-name-jp">中野 梓</div>
-        <div class="char-name-cn">中野梓 / Nakano Azusa</div>
-        <div class="char-role">节奏吉他手 · 一年级新生</div>
-        <span class="char-tag">认真</span>
-        <span class="char-tag">猫耳</span>
-        <span class="char-tag">吉他</span>
-        <div class="char-enter-btn">查看详情 →</div>
+        <div class="char-accent"></div>
+        <div class="char-name">中野 梓</div>
+        <div class="char-name-sub">Nakano Azusa</div>
+        <div class="char-role">节奏吉他手 · 后辈</div>
+        <div class="char-tags">
+          <span class="char-tag">认真</span>
+          <span class="char-tag">猫耳</span>
+          <span class="char-tag">吉他</span>
+        </div>
+        <div class="char-enter">查看详情 →</div>
       </div>
     </div>
 
   </div>
 </section>
 
-<!-- ============================================================
-     关于
-============================================================ -->
+<!-- ═══ Gallery ═══ -->
+<section class="gallery-section" id="gallery">
+  <div class="section reveal">
+    <div class="section-label">♪ 相册集</div>
+  </div>
+  <div class="gallery-inner reveal">
+    <div class="gallery-frame glass-lg">
+      <div class="gallery-viewport" id="galleryViewport">
+        <div class="gallery-track" id="galleryTrack">
+          <div class="gallery-slide"><img src="picture/602974.jpg" alt="轻音少女 1" loading="lazy"></div>
+          <div class="gallery-slide"><img src="picture/739565.jpg" alt="轻音少女 2" loading="lazy"></div>
+          <div class="gallery-slide"><img src="picture/127889.jpg" alt="轻音少女 3" loading="lazy"></div>
+          <div class="gallery-slide"><img src="picture/120613.jpg" alt="轻音少女 4" loading="lazy"></div>
+          <div class="gallery-slide"><img src="picture/1395939.jpg" alt="轻音少女 5" loading="lazy"></div>
+        </div>
+      </div>
+
+      <button class="gallery-arrow prev" id="galleryPrev" aria-label="上一张">‹</button>
+      <button class="gallery-arrow next" id="galleryNext" aria-label="下一张">›</button>
+
+      <div class="gallery-bottom">
+        <span class="gallery-counter" id="galleryCounter">1 / 5</span>
+        <div class="gallery-dots" id="galleryDots"></div>
+        <span class="gallery-autoplay-hint" id="autoplayHint">
+          <span class="pulse-dot"></span> 自动播放
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ About ═══ -->
 <section class="about-section" id="about">
-  <div class="section-title reveal">关于本站</div>
-  <p class="reveal">本站是《轻音少女》（けいおん！）的个人站，秋山澪天下第一！！秋山澪天下第一！！秋山澪天下第一！！</p>
-  <p class="reveal">《轻音少女》原作为 kakifly 的漫画，秋山澪天下第一！！秋山澪天下第一！！秋山澪天下第一！！</p>
-  <p class="reveal" style="font-family:'Caveat',cursive;font-size:1.1rem;color:var(--pink);">「また来てね！」</p>
+  <div class="section-label reveal">✦ 关于本站</div>
+  <p class="about-text reveal">本站是《轻音少女》（けいおん！）的个人粉丝站，秋山澪天下第一！！秋山澪天下第一！！秋山澪天下第一！！秋山澪天下第一！！秋山澪天下第一！！秋山澪天下第一！！。</p>
+  <p class="about-text reveal">《轻音少女》原作为 kakifly 的漫画，由京都动画制作成动画，2009年播出。讲述高中女孩们组成"放課後ティータイム"乐队，一起演奏音乐、喝茶、度过青春的故事。</p>
+  <p class="about-signoff reveal">「また来てね！」</p>
 </section>
 
 <footer>
-  © 秋山澪天下第一！！秋山澪天下第一！！秋山澪天下第一！！
+  © 粉丝站 · 非官方 · Fan Made · けいおん！ © kakifly / 芳文社 / 京都动画
 </footer>
 
-<!-- ============================================================
-     角色详情弹层 Modal
-============================================================ -->
+<!-- ═══ Modal ═══ -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
-  <div class="modal-box" id="modalBox">
+  <div class="modal-box glass-lg" id="modalBox">
     <button class="modal-close" onclick="closeModal()">✕</button>
 
     <div class="modal-header">
-      <!-- ★ 图片：将 modal-char-img 内的 span 换成 <img> 即可 -->
-      <div class="modal-char-img" id="modalImg">
-        <span id="modalImgEmoji" style="position:relative;z-index:1;font-size:4rem;">🎸</span>
+      <div class="modal-img" id="modalImg">
+        <span id="modalImgEmoji" style="position:relative;z-index:1;">🎸</span>
         <img id="modalImgTag" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;">
       </div>
       <div class="modal-title-area">
@@ -1026,32 +1645,23 @@
   </div>
 </div>
 
-<!-- ============================================================
-     隐藏 Audio 元素
-============================================================ -->
+<!-- ═══ Audio ═══ -->
 <audio id="audioPlayer" preload="none"></audio>
 
-<!-- ============================================================
+<!-- ═══════════════════════════════════════════════════════════════
      JavaScript
-============================================================ -->
+     ═══════════════════════════════════════════════════════════════ -->
 <script>
 /* ────────────────────────────────────────────────────────────
-   ★★★ 播放列表数据 ★★★
-   在下方数组里添加你的歌曲：
-   {
-     name:     '歌曲名称（显示用）',
-     artist:   '演唱者',
-     src:      'music/song.mp3',   // ← 本地路径或 https:// URL
-     cover:    'images/cover.jpg', // ← 可选，封面图路径
-     duration: '3:45'              // ← 显示用时长字符串（不影响实际播放）
-   }
-   目前为演示占位，src 留空则点击后无声音属正常。
+   ★★★ 播放列表 ★★★
+   src: 替换为你的音乐文件路径或 URL
+   cover: 可选封面图路径
 ──────────────────────────────────────────────────────────── */
 const playlistData = [
-  { name: 'Fuwa Fuwa Time',         artist: '放課後ティータイム', src: 'music/fuwafuwa_time.mp3', cover: '', duration: '4:19' },
-  { name: 'Don\'t say "lazy"',      artist: '秋山澪（CV: 日笠陽子）', src: 'music/dont_say_lazy.mp3', cover: '', duration: '4:04' },
-  { name: 'Cagayake! GIRLS',        artist: '放課後ティータイム', src: 'music/cagayake_girls.mp3', cover: '', duration: '3:52' },
-  { name: 'U&I',                    artist: '放課後ティータイム', src: 'music/u_and_i.mp3', cover: '', duration: '4:45' },
+  { name: 'Fuwa Fuwa Time',         artist: '放課後ティータイム',          src: 'music/fuwafuwa_time.mp3', cover: '', duration: '4:19' },
+  { name: 'Don\'t say "lazy"',      artist: '秋山澪（CV: 日笠陽子）',     src: 'music/dont_say_lazy.mp3', cover: '', duration: '4:04' },
+  { name: 'Cagayake! GIRLS',        artist: '放課後ティータイム',          src: 'music/cagayake_girls.mp3', cover: '', duration: '3:52' },
+  { name: 'U&I',                    artist: '放課後ティータイム',          src: 'music/u_and_i.mp3', cover: '', duration: '4:45' },
 ];
 
 /* ────────────────────────────────────────────────────────────
@@ -1059,13 +1669,10 @@ const playlistData = [
 ──────────────────────────────────────────────────────────── */
 const charData = {
   yui: {
-    nameJp: '平沢 唯',
-    nameCn: '平泽唯 / Hirasawa Yui',
+    nameJp: '平沢 唯', nameCn: '平泽唯 / Hirasawa Yui',
     instrument: '🎸 吉他（Gitah）· 主唱',
     quote: '「うんうん、ギターって楽しいな！」',
-    emoji: '🎸',
-    /* ★ 图片：imgSrc 填入你的角色图路径，如 'images/yui.png' */
-    imgSrc: 'images/yui.jpg',
+    emoji: '🎸', imgSrc: 'images/yui.jpg',
     stats: [
       { label: '学年', value: '高一 → 高三' },
       { label: '生日', value: '11月27日' },
@@ -1075,12 +1682,10 @@ const charData = {
     songs: ['Fuwa Fuwa Time', 'U&I', 'Cagayake! GIRLS'],
   },
   mio: {
-    nameJp: '秋山 澪',
-    nameCn: '秋山澪 / Akiyama Mio',
+    nameJp: '秋山 澪', nameCn: '秋山澪 / Akiyama Mio',
     instrument: '🎸 贝斯 · 副主唱 · 词作人',
     quote: '「もう！律ったら…」',
-    emoji: '🎶',
-    imgSrc: 'images/mio.jpg',
+    emoji: '🎶', imgSrc: 'images/mio.jpg',
     stats: [
       { label: '学年', value: '高一 → 高三' },
       { label: '生日', value: '1月15日' },
@@ -1090,12 +1695,10 @@ const charData = {
     songs: ['Don\'t say "lazy"', 'Fuwa Fuwa Time'],
   },
   ritsu: {
-    nameJp: '田井中 律',
-    nameCn: '田井中律 / Tainaka Ritsu',
+    nameJp: '田井中 律', nameCn: '田井中律 / Tainaka Ritsu',
     instrument: '🥁 鼓 · 部长',
     quote: '「軽音部を作るぞー！」',
-    emoji: '🥁',
-    imgSrc: 'images/ritsu.jpg',
+    emoji: '🥁', imgSrc: 'images/ritsu.jpg',
     stats: [
       { label: '学年', value: '高一 → 高三' },
       { label: '生日', value: '8月21日' },
@@ -1105,12 +1708,10 @@ const charData = {
     songs: ['Cagayake! GIRLS'],
   },
   tsumugi: {
-    nameJp: '琴吹 紬',
-    nameCn: '琴吹紬 / Kotobuki Tsumugi',
+    nameJp: '琴吹 紬', nameCn: '琴吹紬 / Kotobuki Tsumugi',
     instrument: '🎹 键盘 · 茶点官',
     quote: '「みなさん、お茶にしましょう♪」',
-    emoji: '🎹',
-    imgSrc: 'images/tsumugi.jpg',
+    emoji: '🎹', imgSrc: 'images/tsumugi.jpg',
     stats: [
       { label: '学年', value: '高一 → 高三' },
       { label: '生日', value: '7月2日' },
@@ -1120,12 +1721,10 @@ const charData = {
     songs: ['Fuwa Fuwa Time', 'Cagayake! GIRLS'],
   },
   azusa: {
-    nameJp: '中野 梓',
-    nameCn: '中野梓 / Nakano Azusa',
+    nameJp: '中野 梓', nameCn: '中野梓 / Nakano Azusa',
     instrument: '🎸 节奏吉他',
     quote: '「もっとちゃんと練習しましょうよ！」',
-    emoji: '🐱',
-    imgSrc: 'images/azusa.jpg',
+    emoji: '🐱', imgSrc: 'images/azusa.jpg',
     stats: [
       { label: '学年', value: '高一 → 高二' },
       { label: '生日', value: '11月11日' },
@@ -1137,36 +1736,69 @@ const charData = {
 };
 
 /* ────────────────────────────────────────────────────────────
-   粒子背景
+   Particles
 ──────────────────────────────────────────────────────────── */
 (function initParticles() {
   const container = document.getElementById('particles');
-  const colors = ['#f9a8c9','#fde68a','#c084fc','#93c5fd','#86efac','#fdba74'];
-  for (let i = 0; i < 35; i++) {
+  const colors = ['#ff6b8a','#f0c040','#a78bfa','#6bb5ff','#6bda9c'];
+  const types = ['circle', 'star'];
+  for (let i = 0; i < 45; i++) {
     const p = document.createElement('div');
-    p.className = 'particle';
-    const size = Math.random() * 6 + 2;
+    const type = types[Math.floor(Math.random() * types.length)];
+    const size = Math.random() * 5 + 2;
     p.style.cssText = `
-      width:${size}px;height:${size}px;
+      position:absolute;
+      ${type === 'star'
+        ? `width:${size}px;height:${size}px;background:${colors[Math.floor(Math.random()*colors.length)]};clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);`
+        : `width:${size}px;height:${size}px;border-radius:50%;background:${colors[Math.floor(Math.random()*colors.length)]};`
+      }
       left:${Math.random()*100}%;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      animation-duration:${Math.random()*15+10}s;
-      animation-delay:${Math.random()*-20}s;
+      top:${Math.random()*100}%;
+      opacity:0;
+      pointer-events:none;
+      animation:particleFloat ${Math.random()*18+12}s linear infinite;
+      animation-delay:${Math.random()*-25}s;
     `;
     container.appendChild(p);
   }
 })();
 
-/* ────────────────────────────────────────────────────────────
-   滚动显示
-──────────────────────────────────────────────────────────── */
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.12 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+/* particle keyframes injected via CSS */
+const pStyle = document.createElement('style');
+pStyle.textContent = `
+  @keyframes particleFloat {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+    5% { opacity: 0.5; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+  }
+`;
+document.head.appendChild(pStyle);
 
 /* ────────────────────────────────────────────────────────────
-   播放器逻辑
+   Scroll Reveal
+──────────────────────────────────────────────────────────── */
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ────────────────────────────────────────────────────────────
+   Navigation Toggle
+──────────────────────────────────────────────────────────── */
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+navToggle.addEventListener('click', () => {
+  navToggle.classList.toggle('open');
+  navLinks.classList.toggle('open');
+});
+function closeNav() {
+  navToggle.classList.remove('open');
+  navLinks.classList.remove('open');
+}
+
+/* ────────────────────────────────────────────────────────────
+   Music Player
 ──────────────────────────────────────────────────────────── */
 const audio     = document.getElementById('audioPlayer');
 const btnPlay   = document.getElementById('btnPlay');
@@ -1184,13 +1816,14 @@ const trackName = document.getElementById('trackName');
 const trackArtist = document.getElementById('trackArtist');
 const albumEmoji  = document.getElementById('albumEmoji');
 const albumImg    = document.getElementById('albumImg');
+const albumArt    = document.getElementById('albumArt');
+const eqWrap      = document.getElementById('eqWrap');
 
 let currentIdx = -1;
 let isPlaying  = false;
 let shuffleOn  = false;
 let repeatOn   = false;
 
-/* 构建播放列表 DOM */
 function buildPlaylist() {
   plDiv.innerHTML = '';
   playlistData.forEach((t, i) => {
@@ -1199,15 +1832,14 @@ function buildPlaylist() {
     item.dataset.idx = i;
     item.innerHTML = `
       <span class="playlist-idx">${i + 1}</span>
-      <span class="playlist-item-name">${t.name}</span>
-      <span class="playlist-item-dur">${t.duration}</span>
+      <span class="playlist-name">${t.name}</span>
+      <span class="playlist-dur">${t.duration}</span>
     `;
     item.addEventListener('click', () => loadTrack(i, true));
     plDiv.appendChild(item);
   });
 }
 
-/* 加载曲目 */
 function loadTrack(idx, play = false) {
   if (idx < 0 || idx >= playlistData.length) return;
   currentIdx = idx;
@@ -1215,9 +1847,8 @@ function loadTrack(idx, play = false) {
   trackName.textContent   = t.name;
   trackArtist.textContent = '— ' + t.artist;
 
-  /* 封面图切换 ★ */
   if (t.cover) {
-    albumImg.src      = t.cover;
+    albumImg.src = t.cover;
     albumImg.style.display = 'block';
     albumEmoji.style.display = 'none';
   } else {
@@ -1227,84 +1858,71 @@ function loadTrack(idx, play = false) {
 
   if (t.src) {
     audio.src = t.src;
-    if (play) { audio.play(); isPlaying = true; btnPlay.textContent = '⏸'; }
-  } else {
-    /* 无 src 时提示 */
-    if (play) {
-      trackName.textContent = t.name + '（请填写 src 路径）';
-    }
+    if (play) { audio.play().then(() => { isPlaying = true; btnPlay.textContent = '❚❚'; albumArt.classList.add('spinning'); eqWrap.classList.add('active'); }).catch(() => {}); }
+  } else if (play) {
+    trackName.textContent = t.name + '（请填写 src 路径）';
   }
 
-  /* 高亮列表项 */
   document.querySelectorAll('.playlist-item').forEach((el, i) => {
     el.classList.toggle('active', i === idx);
   });
 }
 
-/* 播放/暂停 */
 btnPlay.addEventListener('click', () => {
   if (currentIdx === -1) { loadTrack(0, true); return; }
-  if (audio.paused) { audio.play(); isPlaying = true; btnPlay.textContent = '⏸'; }
-  else              { audio.pause(); isPlaying = false; btnPlay.textContent = '▶'; }
+  if (audio.paused) {
+    audio.play().then(() => { isPlaying = true; btnPlay.textContent = '❚❚'; albumArt.classList.add('spinning'); eqWrap.classList.add('active'); }).catch(() => {});
+  } else {
+    audio.pause(); isPlaying = false; btnPlay.textContent = '▶'; albumArt.classList.remove('spinning'); eqWrap.classList.remove('active');
+  }
 });
 
-/* 上/下一首 */
 btnPrev.addEventListener('click', () => {
-  let idx = shuffleOn
-    ? Math.floor(Math.random() * playlistData.length)
-    : (currentIdx - 1 + playlistData.length) % playlistData.length;
+  let idx = shuffleOn ? Math.floor(Math.random() * playlistData.length) : (currentIdx - 1 + playlistData.length) % playlistData.length;
   loadTrack(idx, isPlaying);
 });
 
 btnNext.addEventListener('click', () => {
-  let idx = shuffleOn
-    ? Math.floor(Math.random() * playlistData.length)
-    : (currentIdx + 1) % playlistData.length;
+  let idx = shuffleOn ? Math.floor(Math.random() * playlistData.length) : (currentIdx + 1) % playlistData.length;
   loadTrack(idx, isPlaying);
 });
 
-/* 随机 / 循环 */
 btnShuffle.addEventListener('click', () => {
   shuffleOn = !shuffleOn;
-  btnShuffle.style.color = shuffleOn ? 'var(--pink)' : '';
+  btnShuffle.style.opacity = shuffleOn ? '1' : '0.5';
+  btnShuffle.style.color = shuffleOn ? 'var(--accent)' : '';
 });
+
 btnRepeat.addEventListener('click', () => {
   repeatOn = !repeatOn;
-  btnRepeat.style.color = repeatOn ? 'var(--pink)' : '';
+  btnRepeat.style.opacity = repeatOn ? '1' : '0.5';
+  btnRepeat.style.color = repeatOn ? 'var(--accent)' : '';
   audio.loop = repeatOn;
 });
 
-/* 进度更新 */
 audio.addEventListener('timeupdate', () => {
   if (!audio.duration) return;
-  const pct = (audio.currentTime / audio.duration) * 100;
-  progFill.style.width = pct + '%';
+  progFill.style.width = (audio.currentTime / audio.duration) * 100 + '%';
   timeNow.textContent   = fmt(audio.currentTime);
   timeTotal.textContent = fmt(audio.duration);
 });
 
-/* 点击进度条跳转 */
 progBg.addEventListener('click', e => {
   if (!audio.duration) return;
   const rect = progBg.getBoundingClientRect();
   audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
 });
 
-/* 曲目结束 */
 audio.addEventListener('ended', () => {
   if (!repeatOn) {
-    let idx = shuffleOn
-      ? Math.floor(Math.random() * playlistData.length)
-      : (currentIdx + 1) % playlistData.length;
+    let idx = shuffleOn ? Math.floor(Math.random() * playlistData.length) : (currentIdx + 1) % playlistData.length;
     loadTrack(idx, true);
   }
 });
 
-/* 音量 */
 volSlider.addEventListener('input', () => { audio.volume = volSlider.value; });
 audio.volume = volSlider.value;
 
-/* 时间格式化 */
 function fmt(s) {
   if (isNaN(s)) return '0:00';
   const m = Math.floor(s / 60), sec = Math.floor(s % 60);
@@ -1314,7 +1932,87 @@ function fmt(s) {
 buildPlaylist();
 
 /* ────────────────────────────────────────────────────────────
-   角色 Modal 逻辑
+   Gallery Carousel
+──────────────────────────────────────────────────────────── */
+(function initGallery() {
+  const track = document.getElementById('galleryTrack');
+  const slides = track.children;
+  const dotsContainer = document.getElementById('galleryDots');
+  const counter = document.getElementById('galleryCounter');
+  const prevBtn = document.getElementById('galleryPrev');
+  const nextBtn = document.getElementById('galleryNext');
+  const hintEl = document.getElementById('autoplayHint');
+  const viewport = document.getElementById('galleryViewport');
+
+  let current = 0;
+  let autoplayTimer = null;
+  const AUTOPLAY_DELAY = 4000;
+  let autoplayActive = true;
+
+  /* create dots */
+  for (let i = 0; i < slides.length; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'gallery-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', '图片 ' + (i + 1));
+    dot.addEventListener('click', () => goTo(i));
+    dotsContainer.appendChild(dot);
+  }
+
+  function goTo(idx) {
+    if (idx < 0) idx = slides.length - 1;
+    if (idx >= slides.length) idx = 0;
+    current = idx;
+    track.style.transform = 'translateX(-' + (current * 100) + '%)';
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    Array.from(dotsContainer.children).forEach((d, i) => d.classList.toggle('active', i === current));
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  prevBtn.addEventListener('click', () => { prev(); resetAutoplay(); });
+  nextBtn.addEventListener('click', () => { next(); resetAutoplay(); });
+
+  /* keyboard */
+  viewport.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') { prev(); resetAutoplay(); }
+    if (e.key === 'ArrowRight') { next(); resetAutoplay(); }
+  });
+  viewport.setAttribute('tabindex', '0');
+
+  /* autoplay */
+  function startAutoplay() {
+    stopAutoplay();
+    if (!autoplayActive) return;
+    autoplayTimer = setInterval(next, AUTOPLAY_DELAY);
+    hintEl.classList.remove('paused');
+  }
+
+  function stopAutoplay() {
+    if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
+    hintEl.classList.add('paused');
+  }
+
+  function resetAutoplay() {
+    stopAutoplay();
+    startAutoplay();
+  }
+
+  /* pause on hover / touch */
+  const frame = document.querySelector('.gallery-frame');
+  frame.addEventListener('mouseenter', stopAutoplay);
+  frame.addEventListener('mouseleave', startAutoplay);
+
+  /* pause on visibility change */
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopAutoplay(); else startAutoplay();
+  });
+
+  startAutoplay();
+})();
+
+/* ────────────────────────────────────────────────────────────
+   Modal
 ──────────────────────────────────────────────────────────── */
 function openModal(key) {
   const d = charData[key];
@@ -1322,10 +2020,9 @@ function openModal(key) {
 
   document.getElementById('modalNameJp').textContent    = d.nameJp;
   document.getElementById('modalNameCn').textContent    = d.nameCn;
-  document.getElementById('modalInstrument').textContent= d.instrument;
+  document.getElementById('modalInstrument').textContent = d.instrument;
   document.getElementById('modalQuote').textContent     = d.quote;
 
-  /* 图片或 emoji ★ */
   const imgTag   = document.getElementById('modalImgTag');
   const imgEmoji = document.getElementById('modalImgEmoji');
   if (d.imgSrc) {
@@ -1339,14 +2036,11 @@ function openModal(key) {
     imgEmoji.textContent   = d.emoji;
   }
 
-  /* 统计数据 */
   document.getElementById('modalStats').innerHTML = d.stats.map(s =>
     `<div class="stat-box"><div class="stat-label">${s.label}</div><div class="stat-value">${s.value}</div></div>`
   ).join('');
 
   document.getElementById('modalDesc').textContent = d.desc;
-
-  /* 代表曲 */
   document.getElementById('modalSongs').innerHTML = d.songs.map(s =>
     `<span class="modal-song-tag">${s}</span>`
   ).join('');
